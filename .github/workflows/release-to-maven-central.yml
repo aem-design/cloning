@@ -1,90 +1,215 @@
-name: release-to-maven-central
-on:
-  workflow_dispatch:
-    inputs:
-      releaseversion:
-        description: 'Release version'
-        required: true
-        default: '1.11.0'
-jobs:
-  publish:
-    runs-on: ubuntu-latest
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>design.aem</groupId>
+	<artifactId>cloning</artifactId>
+	<packaging>bundle</packaging>
+	<version>1.11.0</version>
+	<name>cloning</name>
+	<url>https://github.com/aem-design/cloning/</url>
+	<description><![CDATA[
+                The cloning library is a small, open source (Apache
+                licensed) Java library which deep-clones objects. The
+                objects do not have to implement the Cloneable
+                interface. Effectively, this library can clone ANY
+                Java object. It can be used i.e. in cache
+                implementations, if you don't want the cached object
+                to be modified or whenever you want to create a deep
+                copy of an object.
+        ]]></description>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Chad Wilson</name>
+			<email>chadw@thoughtworks.com</email>
+			<organizationUrl>https://github.com/chadlwilson</organizationUrl>
+		</developer>
+		<developer>
+			<email>max@aem.design</email>
+			<name>Max Barrass</name>
+			<organizationUrl>https://github.com/aem-design</organizationUrl>
+		</developer>
+	</developers>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
+	</properties>
+	<scm>
+		<connection>scm:git:https://github.com/aem-design/cloning.git</connection>
+		<developerConnection>scm:git:https://github.com/aem-design/cloning.git</developerConnection>
+		<url>https://github.com/aem-design/cloning</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/aem-design/cloning/issues</url>
+	</issueManagement>
 
-    env:
-      DOCKER_IMAGE: "aemdesign/centos-java-buildpack"
-      SONAR_ORGANISATION: "aemdesign-github"
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_URL: "https://sonarcloud.io"
-      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-      SONATYPE_USERNAME: "aemdesign"
-      GITHUB_USER: aemdesign
-      GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
-      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-      GITHUB_TOKEN_ADMIN: ${{ secrets.GITHUB_TOKEN_ADMIN }}
-      AEM_NAME: ${{ secrets.AEM_NAME }}
-      AEM_KEY: ${{ secrets.AEM_KEY }}
-      GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
-      GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GPG_EXECUTABLE: gpg
-      GPG_PRESET_EXECUTABLE: /usr/lib/gnupg/gpg-preset-passphrase
-      GPG_PUBID: "50A036956AAC64C13EF47B10D1E96A30ECFC7DFF"
-      GPG_PUBID_KEYGRIP: "020E615868703482DC2CD110B98D2702B6ABF89C"
-
-    steps:
-      - run: echo "Will start a Maven Central upload with version ${{ github.event.inputs.releaseversion }}"
-
-      - uses: actions/checkout@v3
-
-      - name: Set up settings.xml for Maven Central Repository
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'adopt'
-          java-version: 11
-
-      - name: setup gpg
-        run: |
-          source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/setup-gpg.sh)
-
-      - name: Set projects Maven version to GitHub Action GUI set version
-        run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
-
-      - name: deploy to maven central
-        run: mvn --batch-mode deploy --settings default.xml -B -P ossrh --no-transfer-progress
-
-#      - name: Publish package
-#        run: mvn --batch-mode clean deploy --no-transfer-progress -P central-deploy -DskipTests=true
-#        env:
-#          MAVEN_USERNAME: "aemdesign"
-#          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-#          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v4.0.1
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.releaseversion }}
-          release_name: ${{ github.event.inputs.releaseversion }}
-          body: |
-            Grab the new version from Maven central https://search.maven.org/artifact/design.aem/cloning/${{ github.event.inputs.releaseversion }}/:
-            ```
-            <dependencies>
-            	<dependency>
-                    <groupId>design.aem</groupId>
-                    <artifactId>cloning</artifactId>
-            	    <version>${{ github.event.inputs.releaseversion }}</version>
-            	</dependency>
-            </dependencies>
-            ```
-            ### Things that changed in this release
-            ${{ steps.changelog.outputs.changelog }}
-          draft: false
-          prerelease: false
+	<profiles>
+		<profile>
+			<id>github</id>
+			<distributionManagement>
+				<repository>
+					<id>github</id>
+					<name>GitHub Packages</name>
+					<url>https://maven.pkg.github.com/aem-design/cloning</url>
+				</repository>
+			</distributionManagement>
+		</profile>
+		<profile>
+			<id>ossrh</id>
+			<distributionManagement>
+				<repository>
+					<id>ossrh</id>
+					<name>Central Repository OSSRH</name>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
+				<snapshotRepository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<!-- This is necessary for gpg to not try to use the pinentry programs -->
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- To release to Maven central -->
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.8</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<stagingProfileId>c4011210992a35</stagingProfileId>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<autoDropAfterRelease>true</autoDropAfterRelease>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<release>11</release>
+					<compilerArgument>-Xlint:unchecked</compilerArgument>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M7</version>
+				<configuration>
+					<argLine>
+						--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
+					</argLine>
+					<includes>
+						<include>**/Test*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.4.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.4.2</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/dist.xml</descriptor>
+					</descriptors>
+					<descriptorRefs>
+						<descriptorRef>project</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>5.1.8</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.objenesis</groupId>
+			<artifactId>objenesis</artifactId>
+			<version>3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.9.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
