@@ -97,15 +97,19 @@
 							</execution>
 						</executions>
 					</plugin>
+					<!-- To release to Maven central -->
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.13</version>
+						<version>1.6.8</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
-							<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<stagingProfileId>c4011210992a35</stagingProfileId>
+							<stagingDescription>git hub actions</stagingDescription>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<autoDropAfterRelease>true</autoDropAfterRelease>
 						</configuration>
 					</plugin>
 				</plugins>
