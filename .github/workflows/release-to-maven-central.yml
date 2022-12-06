@@ -22,7 +22,7 @@ jobs:
           server-id: oss.sonatype.org
           server-username: "aemdesign"
           server-password: ${{ secrets.SONATYPE_PASSWORD }}
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Set projects Maven version to GitHub Action GUI set version
