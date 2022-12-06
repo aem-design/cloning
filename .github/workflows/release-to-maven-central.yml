@@ -64,11 +64,16 @@ jobs:
 #      - name: Publish package
 #        run: mvn --batch-mode clean deploy --no-transfer-progress -P central-deploy -DskipTests=true
 
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v4.0.1
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: get release notes
+        id: config
+        run: |
+          source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/github_get_version.sh)
+
+#      - name: Generate changelog
+#        id: changelog
+#        uses: metcalfc/changelog-generator@v4.0.1
+#        with:
+#          myToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         id: create_release
@@ -90,6 +95,6 @@ jobs:
             </dependencies>
             ```
             ### Things that changed in this release
-            ${{ steps.changelog.outputs.changelog }}
+             ${{ steps.config.outputs.GIT_RELEASE_NOTES }}
           draft: false
           prerelease: false
