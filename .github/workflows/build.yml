@@ -54,6 +54,6 @@ jobs:
           java-version: 11
 
       - name: Publish SNAPSHOT version to GitHub Packages (we can skip tests, since we only deploy, if the build workflow succeeded)
-        run: mvn -B --no-transfer-progress deploy -DskipTests
+        run: mvn -B --no-transfer-progress deploy -P github -DskipTests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
