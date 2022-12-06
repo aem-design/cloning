@@ -18,15 +18,6 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
-          server-id: oss.sonatype.org
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
-          gpg-passphrase: GPG_PASSPHRASE
-        env:
-          MAVEN_USERNAME: "aemdesign"
-          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - run: mvn -B install --no-transfer-progress
 
   coverage:
