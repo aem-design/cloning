@@ -1,23 +1,80 @@
-name: Java CI
+name: build
 
 on: [push]
 
 jobs:
   build:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
+
     strategy:
+      max-parallel: 4
       matrix:
         java-version: [11, 15, 16, 17]
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          java-version: ${{ matrix.java-version }}
           distribution: 'adopt'
-      - run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/*-dist.tar.gz target/*.jar staging
-      - uses: actions/upload-artifact@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
+          java-version: ${{ matrix.java-version }}
+      - run: mvn -B install --no-transfer-progress
+
+  coverage:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
-          name: Package
-          path: staging
+          distribution: 'adopt'
+          java-version: 11
+
+      - run: mvn -B verify -P coverage --no-transfer-progress
+
+      - uses: codecov/codecov-action@v3
+        with:
+          file: ./**/target/site/jacoco/jacoco.xml
+          name: codecov
+
+  publish-snapshot:
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    needs: coverage
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_IMAGE: "aemdesign/centos-java-buildpack"
+      SONAR_ORGANISATION: "aemdesign-github"
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_URL: "https://sonarcloud.io"
+      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      SONATYPE_USERNAME: "aemdesign"
+      GITHUB_USER: aemdesign
+      GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
+      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+      GITHUB_TOKEN_ADMIN: ${{ secrets.GITHUB_TOKEN_ADMIN }}
+      AEM_NAME: ${{ secrets.AEM_NAME }}
+      AEM_KEY: ${{ secrets.AEM_KEY }}
+      GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
+      GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      GPG_EXECUTABLE: gpg
+      GPG_PRESET_EXECUTABLE: /usr/lib/gnupg/gpg-preset-passphrase
+      GPG_PUBID: "50A036956AAC64C13EF47B10D1E96A30ECFC7DFF"
+      GPG_PUBID_KEYGRIP: "020E615868703482DC2CD110B98D2702B6ABF89C"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up settings.xml for GitHub Packages
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 11
+
+      - name: Publish SNAPSHOT version to GitHub Packages (we can skip tests, since we only deploy, if the build workflow succeeded)
+        run: mvn -B --no-transfer-progress deploy -DskipTests --projects cxf-spring-boot-starter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
