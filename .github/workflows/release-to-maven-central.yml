@@ -51,13 +51,13 @@ jobs:
 
       - name: deploy to maven central
         run: mvn --batch-mode deploy --settings default.xml -B -P ossrh --no-transfer-progress
+        env:
+          MAVEN_USERNAME: "aemdesign"
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
 #      - name: Publish package
 #        run: mvn --batch-mode clean deploy --no-transfer-progress -P central-deploy -DskipTests=true
-#        env:
-#          MAVEN_USERNAME: "aemdesign"
-#          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-#          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Generate changelog
         id: changelog
