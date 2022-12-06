@@ -41,21 +41,23 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: setup gpg
+        run: |
+          source <(curl -sL https://github.com/aem-design/aemdesign-docker/releases/latest/download/setup-gpg.sh)
 
       - name: Set projects Maven version to GitHub Action GUI set version
         run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
 
-      - name: Publish package
-        run: mvn --batch-mode clean deploy --no-transfer-progress -P central-deploy -DskipTests=true
-        env:
-          MAVEN_USERNAME: "aemdesign"
-          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: deploy to maven central
+        run: mvn deploy --settings default.xml -B -P release
+
+#      - name: Publish package
+#        run: mvn --batch-mode clean deploy --no-transfer-progress -P central-deploy -DskipTests=true
+#        env:
+#          MAVEN_USERNAME: "aemdesign"
+#          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+#          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Generate changelog
         id: changelog
