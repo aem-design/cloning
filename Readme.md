@@ -30,3 +30,17 @@ MyClass clone = cloner.deepClone(o);
   * [Usage details and examples](USAGE.md)
   * [Development](DEVELOPMENT.md)
   
+## Using
+
+### Maven
+
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>design.aem</groupId>
+            <artifactId>cloning</artifactId>
+            <version>1.11.0</version>
+        </dependency>
+    </dependencies>
+```
+
