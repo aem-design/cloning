@@ -4,7 +4,7 @@
 	<groupId>design.aem</groupId>
 	<artifactId>cloning</artifactId>
 	<packaging>bundle</packaging>
-	<version>1.11.0</version>
+	<version>1.11.1</version>
 	<name>cloning</name>
 	<url>https://github.com/aem-design/cloning/</url>
 	<description><![CDATA[
@@ -257,6 +257,7 @@
 			<groupId>org.objenesis</groupId>
 			<artifactId>objenesis</artifactId>
 			<version>3.3</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
