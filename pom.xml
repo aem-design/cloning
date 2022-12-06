@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>io.github.chadlwilson</groupId>
+	<groupId>design.aem</groupId>
 	<artifactId>cloning</artifactId>
 	<packaging>bundle</packaging>
 	<version>1.11.0</version>
 	<name>cloning</name>
-	<url>https://github.com/chadlwilson/cloning/</url>
+	<url>https://github.com/aem-design/cloning/</url>
 	<description><![CDATA[
                 The cloning library is a small, open source (Apache
                 licensed) Java library which deep-clones objects. The
@@ -29,6 +29,11 @@
 			<email>chadw@thoughtworks.com</email>
 			<organizationUrl>https://github.com/chadlwilson</organizationUrl>
 		</developer>
+		<developer>
+			<email>max@aem.design</email>
+			<name>Max Barrass</name>
+			<organizationUrl>https://github.com/aem-design</organizationUrl>
+		</developer>
 	</developers>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,13 +42,13 @@
 		<maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
 	</properties>
 	<scm>
-		<connection>scm:git:https://github.com/chadlwilson/cloning.git</connection>
-		<developerConnection>scm:git:https://github.com/chadlwilson/cloning.git</developerConnection>
-		<url>https://github.com/chadlwilson/cloning</url>
+		<connection>scm:git:https://github.com/aem-design/cloning.git</connection>
+		<developerConnection>scm:git:https://github.com/aem-design/cloning.git</developerConnection>
+		<url>https://github.com/aem-design/cloning</url>
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/chadlwilson/cloning/issues</url>
+		<url>https://github.com/aem-design/cloning/issues</url>
 	</issueManagement>
 	<distributionManagement>
 		<repository>
