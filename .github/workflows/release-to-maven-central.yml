@@ -53,7 +53,10 @@ jobs:
         run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
 
       - name: deploy to maven central
-        run: mvn clean deploy -P ossrh --no-transfer-progress --batch-mode 
+        run: |
+          echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import 
+          echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+          mvn deploy --settings default.xml -P ossrh --no-transfer-progress --batch-mode
         env:
           SONATYPE_USERNAME: "aemdesign"
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
