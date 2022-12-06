@@ -7,27 +7,6 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
 
-    env:
-      DOCKER_IMAGE: "aemdesign/centos-java-buildpack"
-      SONAR_ORGANISATION: "aemdesign-github"
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_URL: "https://sonarcloud.io"
-      SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-      SONATYPE_USERNAME: "aemdesign"
-      GITHUB_USER: aemdesign
-      GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
-      GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-      GITHUB_TOKEN_ADMIN: ${{ secrets.GITHUB_TOKEN_ADMIN }}
-      AEM_NAME: ${{ secrets.AEM_NAME }}
-      AEM_KEY: ${{ secrets.AEM_KEY }}
-      GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
-      GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      GPG_EXECUTABLE: gpg
-      GPG_PRESET_EXECUTABLE: /usr/lib/gnupg/gpg-preset-passphrase
-      GPG_PUBID: "50A036956AAC64C13EF47B10D1E96A30ECFC7DFF"
-      GPG_PUBID_KEYGRIP: "020E615868703482DC2CD110B98D2702B6ABF89C"
-      
     strategy:
       max-parallel: 4
       matrix:
@@ -40,10 +19,14 @@ jobs:
           distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
           server-id: oss.sonatype.org
-          server-username: SONATYPE_USERNAME
-          server-password: SONATYPE_PASSWORD
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
           gpg-passphrase: GPG_PASSPHRASE
+        env:
+          MAVEN_USERNAME: "aemdesign"
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       - run: mvn -B install --no-transfer-progress
 
   coverage:
