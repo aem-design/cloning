@@ -16,7 +16,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONAR_URL: "https://sonarcloud.io"
       SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-      SONATYPE_USERNAME: "aemdesign"
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
       GITHUB_USER: aemdesign
       GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
       GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
@@ -58,7 +58,7 @@ jobs:
           echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
           mvn deploy --settings default.xml -P ossrh --no-transfer-progress --batch-mode
         env:
-          SONATYPE_USERNAME: "aemdesign"
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
 #      - name: Publish package
