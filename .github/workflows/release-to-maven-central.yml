@@ -20,7 +20,7 @@ jobs:
           distribution: 'adopt'
           java-version: 11
           server-id: oss.sonatype.org
-          server-username: ${{ env.SONATYPE_USERNAME }}
+          server-username: "aemdesign"
           server-password: ${{ secrets.SONATYPE_PASSWORD }}
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
