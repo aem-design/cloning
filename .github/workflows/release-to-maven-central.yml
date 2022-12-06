@@ -50,7 +50,7 @@ jobs:
         run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
 
       - name: deploy to maven central
-        run: mvn deploy --settings default.xml -B -P release
+        run: mvn --batch-mode deploy --settings default.xml -B -P ossrh --no-transfer-progress
 
 #      - name: Publish package
 #        run: mvn --batch-mode clean deploy --no-transfer-progress -P central-deploy -DskipTests=true
