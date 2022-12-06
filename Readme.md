@@ -4,7 +4,7 @@
 [![release_status](https://github.com/aem-design/cloning/workflows/release-to-maven-central/badge.svg?branch=master)](https://github.com/aem-design/cloning/actions?workflow=release-to-maven-central)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=design.aem%3Acloning&metric=alert_status)](https://sonarcloud.io/dashboard?id=design.aem%3Acloning)
 [![codecov](https://codecov.io/gh/aem-design/cloning/branch/master/graph/badge.svg?magic)](https://codecov.io/gh/aem-design/cloning)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/design.aem/aemdesign-aem-common/badge.svg?magic)](https://maven-badges.herokuapp.com/maven-central/design.aem/aemdesign-aem-common)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/design.aem/cloning/badge.svg?magic)](https://maven-badges.herokuapp.com/maven-central/design.aem/cloning)
 [![github license](https://img.shields.io/github/license/aem-design/cloning)](https://github.com/aem-design/cloning)
 [![github issues](https://img.shields.io/github/issues/aem-design/cloning)](https://github.com/aem-design/cloning)
 [![github last commit](https://img.shields.io/github/last-commit/aem-design/cloning)](https://github.com/aem-design/cloning)
