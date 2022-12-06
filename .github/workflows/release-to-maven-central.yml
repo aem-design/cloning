@@ -107,6 +107,7 @@
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 							<stagingProfileId>c4011210992a35</stagingProfileId>
+							<stagingDescription>git hub actions</stagingDescription>
 							<autoReleaseAfterClose>true</autoReleaseAfterClose>
 							<autoDropAfterRelease>true</autoDropAfterRelease>
 						</configuration>
