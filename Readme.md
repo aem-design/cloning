@@ -27,10 +27,13 @@ MyClass clone = cloner.deepClone(o);
 ## Useful links
   * [Usage details and examples](USAGE.md)
   * [Development](DEVELOPMENT.md)
-  
+ 
+ 
 ## Using
 
 ### Maven
+
+you can add this as a dep
 
 ```xml
     <dependencies>
@@ -40,5 +43,42 @@ MyClass clone = cloner.deepClone(o);
             <version>1.11.0</version>
         </dependency>
     </dependencies>
+```
+ 
+## What is this for
+
+### ObjectInputStream
+
+You can try simple ObjectInputStream copy:
+
+```
+ObjectType copy = null;
+try {
+    // Write the object out to a byte array
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ObjectOutputStream out = new ObjectOutputStream(bos);
+    out.writeObject(this);
+    out.flush();
+    out.close();
+
+    // Read input stream into a copy of the object.
+    ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+    copy = (ObjectType) in.readObject();
+} catch (IOException e) {
+    e.printStackTrace();
+} catch (ClassNotFoundException cnfe) {
+    cnfe.printStackTrace();
+}
+return copy;
+```
+
+### Alternative
+
+Another approach that could work is using gson:
+
+```
+    Gson gson = new GsonBuilder().create();
+    String json = gson.toJson(this);
+    copy = gson.fromJson(json, FormDataModel.class);
 ```
 
