@@ -40,7 +40,7 @@ you can add this as a dep
         <dependency>
             <groupId>design.aem</groupId>
             <artifactId>cloning</artifactId>
-            <version>1.11.0</version>
+            <version>1.12.1</version>
         </dependency>
     </dependencies>
 ```
@@ -82,3 +82,19 @@ Another approach that could work is using gson:
     copy = gson.fromJson(json, FormDataModel.class);
 ```
 
+
+* [Usage details and examples](USAGE.md)
+* [Development](DEVELOPMENT.md)
+
+
+## Our thanks
+
+![yourkit](https://www.yourkit.com/images/yklogo.png)
+
+To yourkit for their excellent profiler.
+
+YourKit supports open source projects with innovative and intelligent tools
+for monitoring and profiling Java and .NET applications.
+YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
+[YourKit .NET Profiler](https://www.yourkit.com/dotnet-profiler/),
+and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
